@@ -10,6 +10,7 @@ import {
 
 export default function App() {
     const getTodayString = () => new Date().toISOString().split('T')[0];
+    const [selectedDate, setSelectedDate] = useState(getTodayString());
 
     const initialClientsData = [
         { id: 1, name: "Asador Don Juan", manager: "Juan Manuel Pérez", phone: "+34 612 345 678", province: "Madrid", address: "Calle Mayor 42", plan: "Plan Fundadores (100€/año)", status: "Protegido", callNote: "" },
@@ -281,7 +282,7 @@ export default function App() {
 
     // LÓGICA DE CONTADORES CORREGIDA Y EXACTA
     const todayStr = getTodayString();
-    const todayReservations = reservations.filter(r => r.date === todayStr);
+    const todayReservations = reservations.filter(r => r.date === selectedDate);
 
     // 1. Reservas de Hoy: Total de registros creados para la fecha actual (excluyendo canceladas si quisiéramos, o el total absoluto)
     const totalTodayCount = todayReservations.length;
@@ -446,7 +447,46 @@ export default function App() {
                                 <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                     <List className="w-4 h-4 text-amber-500" /> Listado de Reservas Registradas
                                 </h3>
-                                <span className="text-xs text-slate-500 dark:text-slate-400">Filtrado por: Hoy ({todayStr})</span>
+                                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800">
+    <button
+        type="button"
+        onClick={() => {
+            const d = new Date(selectedDate);
+            d.setDate(d.getDate() - 1);
+            setSelectedDate(d.toISOString().split('T')[0]);
+        }}
+        className="px-2.5 py-1 text-xs bg-white dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-lg border border-slate-300 dark:border-slate-700"
+    >
+        ◀
+    </button>
+
+    <input
+        type="date"
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+        className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-amber-600 dark:text-amber-400 font-bold text-xs rounded-lg px-2 py-1 focus:outline-none cursor-pointer"
+    />
+
+    <button
+        type="button"
+        onClick={() => {
+            const d = new Date(selectedDate);
+            d.setDate(d.getDate() + 1);
+            setSelectedDate(d.toISOString().split('T')[0]);
+        }}
+        className="px-2.5 py-1 text-xs bg-white dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-lg border border-slate-300 dark:border-slate-700"
+    >
+        ▶
+    </button>
+
+    <button
+        type="button"
+        onClick={() => setSelectedDate(getTodayString())}
+        className="px-3 py-1 text-xs bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold rounded-lg shadow-sm"
+    >
+        Hoy
+    </button>
+</div>
                             </div>
                             <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
                                 <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
